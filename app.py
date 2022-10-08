@@ -1,7 +1,12 @@
+from argparse import Namespace
+from email import message
+from socket import socket
 from flask import Flask, render_template, session, copy_current_request_context
 from flask_socketio import SocketIO, emit, disconnect
 from threading import Lock
 import random
+
+from itsdangerous import NoneAlgorithm
 
 ###########################
 #########CONFIG############
@@ -22,6 +27,14 @@ hepThread = None
 hep_thread_lock = Lock()
 radThread = None
 rad_thread_lock = Lock()
+bubbleThread = None
+bubble_thread_lock = Lock()
+mergeThread = None
+merge_thread_lock = Lock()
+bucketThread =None
+bucket_thread_lock = Lock()
+countThread=None
+count_thread_lock=Lock()
 
 def insertion_sort(array, speed):
     global insThread       
@@ -157,6 +170,169 @@ def radix_sort(nums, speed):
         socket_.emit('radix',{'data':{'algorithm':'radix', 'array':nums}}, namespace='/sort')
     radThread=None
 
+def bubble_sort(array, speed):
+    global bubbleThread
+    num = len(array)
+    for i in  range (0, num):
+        for j in range (0, num-i-1):
+            socket_.sleep(speed)
+            socket_.emit('bub',{'data':{'algorithm':'BubbleSort', 'array':array, 'end': len(array)}}, namespace='/sort')
+            if array[j] > array[j+1]:
+                array[j], array[j+1] = array[j+1], array[j]
+
+    bubbleThread = None
+
+def merge(array, s, m, e, speed):
+    left = array[s:m+1]
+    right = array[m+1:e+1]
+
+    count, recurce = 0, 0
+    sorted = s
+    socket_.sleep(speed/3)
+    socket_.emit('merge',{'data':{'algorithm':'mergesort', 'array':array}}, namespace='/sort')
+    while count < len(left) and recurce < len(right):
+        # sorting the left half of the array passsed
+        socket_.sleep(speed/3)
+        socket_.emit('merge',{'data':{'algorithm':'mergesort', 'array':array}}, namespace='/sort')
+        if left[count] <= right[recurce]:
+            socket_.sleep(speed/3)
+            socket_.emit('merge',{'data':{'algorithm':'mergesort', 'array':array}}, namespace='/sort')
+            array[sorted] = left[count]
+            count+=1
+        else:
+            # sorting the right halfof array passed
+            socket_.sleep(speed/3)
+            socket_.emit('merge',{'data':{'algorithm':'mergesort', 'array':array}}, namespace='/sort')
+            array[sorted] = right[recurce]
+            recurce += 1
+
+        sorted += 1
+    # Loop check if one half is sorted before the end of other half
+    while count < len(left):
+        socket_.sleep(speed/3)
+        socket_.emit('merge',{'data':{'algorithm':'mergesort', 'array':array}}, namespace='/sort')
+        array[sorted] = left[count]
+        count += 1
+        sorted += 1
+    # wait check if the right half is not sorted by the time left half has been sorted
+    while recurce < len(right):
+        socket_.sleep(speed/3)
+        socket_.emit('merge',{'data':{'algorithm':'mergesort', 'array':array}}, namespace='/sort')
+        array[sorted] = right[recurce]
+        recurce += 1
+        sorted += 1
+    socket_.sleep(speed/3)
+    socket_.emit('merge',{'data':{'algorithm':'mergesort', 'array':array}}, namespace='/sort')
+
+def merge_sort(array, start, end, speed):
+    global mergeThread
+    if start >= end:
+        return
+    
+    mid = (start + end) // 2
+    socket_.sleep(speed/3)
+    socket_.emit('merge',{'data':{'algorithm':'mergesort', 'array':array}}, namespace='/sort')
+    
+    merge_sort(array, start, mid, speed)
+
+    merge_sort(array, mid+1, end, speed)
+    
+    socket_.sleep(speed/3)
+    socket_.emit('merge',{'data':{'algorithm':'mergesort', 'array':array}}, namespace='/sort')
+
+    
+    
+    merge(array, start, mid, end, speed)
+    socket_.sleep(speed/3)
+    socket_.emit('merge',{'data':{'algorithm':'mergesort', 'array':array}}, namespace='/sort')
+    
+   
+    mergeThread = None
+
+def bucket_insertion(element):
+    for sorted in range(1, len(element)):
+        insert = element[sorted]    # taking a sorted initial index
+        j = sorted - 1
+        while j >= 0 and element[j] > insert:   #checking if index is less then the sorted key
+            element[j + 1] = element[j]         # swapping
+            j -= 1                              # the
+        element[j + 1] = insert                 # indexes
+    return element   
+
+
+def bucket_sort(array, speed):
+    global bucketThread
+
+    arr = []        # array for buckets
+    bucket = 10     # declaring no.of buckets to store index elements
+    for i in range(bucket):
+        arr.append([])  # initializing the bucket array
+          
+    # Put array elements in different buckets 
+    for j in array:
+        in_bucket = int(bucket//10)     
+        arr[in_bucket].append(j)    #appending the element of original array in buckets
+
+    # Sort individual buckets 
+    for i in range(bucket):
+        # visualizing the elements being sorted through insertion sort
+        socket_.sleep(speed)
+        socket_.emit('buck',{'data':{'algorithm':'BucketSort', 'array':array}}, namespace='/sort')                      # making new figure on every sort swap
+        arr[i] = bucket_insertion(arr[i])  # calling secondary sorting algorithm
+        
+    # concatenate the result
+    k = 0
+    for i in range(bucket):
+        num = len(arr[i])
+        socket_.sleep(speed)
+        socket_.emit('buck',{'data':{'algorithm':'BucketSort', 'array':array}}, namespace='/sort')
+        for j in range(num):
+            # Visualizing the elements being stored to its original array after sorting
+            socket_.sleep(speed)
+            socket_.emit('buck',{'data':{'algorithm':'BucketSort', 'array':array}}, namespace='/sort')
+            array[k] = arr[i][j]             # returning sorted elements from buckets to array
+            k += 1
+
+    bucketThread = None
+
+def count_sort(arr, speed):
+    global countThread
+
+    max_element = int(max(arr))
+    min_element = int(min(arr))
+    range_of_elements = max_element - min_element + 1
+    # Create a count array to store count of individual
+    # elements and initialize count array as 0
+    count_arr = [0 for _ in range(range_of_elements)]
+    output_arr = [0 for _ in range(len(arr))]
+  
+    # Store count of each character
+    for i in range(0, len(arr)):
+        count_arr[arr[i]-min_element] += 1
+  
+    # Change count_arr[i] so that count_arr[i] now contains actual
+    # position of this element in output array
+    for i in range(1, len(count_arr)):
+        count_arr[i] += count_arr[i-1]
+  
+    # Build the output character array
+    for i in range(len(arr)-1, -1, -1):
+        socket_.sleep(speed)
+        socket_.emit('count',{'data':{'algorithm':'countSort', 'array':arr}}, namespace='/sort')
+        output_arr[count_arr[arr[i] - min_element] - 1] = arr[i]
+        count_arr[arr[i] - min_element] -= 1
+  
+    # Copy the output array to arr, so that arr now
+    # contains sorted characters
+    for i in range(0, len(arr)):
+        socket_.sleep(speed)
+        socket_.emit('count',{'data':{'algorithm':'countSort', 'array':arr}}, namespace='/sort')
+        arr[i] = output_arr[i]
+    socket_.sleep(speed)
+    socket_.emit('count',{'data':{'algorithm':'countSort', 'array':arr}}, namespace='/sort')
+
+    countThread=None
+
 ###########################
 #########ROUTES############
 ###########################
@@ -221,6 +397,46 @@ def radix(data):
             arr=random.sample(range(message['min'], message['max']), message['max']-message['min'])#[i for i in range(message['max'], message['min']-1, -1)]
             radThread = socket_.start_background_task(radix_sort, arr, message['speed'])
     emit('logging', {'data': 'Starting heap sort'})
+
+@socket_.on('BubbleSort', namespace='/sort')
+def BubbleSort(data):
+    message=data['data']
+    global bubbleThread
+    with bubble_thread_lock:
+        if bubbleThread is None:
+            arr=arr=random.sample(range(message['min'], message['max']), message['max']-message['min'])
+            bubbleThread =socket_.start_background_task(bubble_sort, arr, message['speed'])
+    emit('logging', {'data':'Starting BuubleSort'})
+
+@socket_.on('mergesort', namespace='/sort')
+def mergesort(data):
+    message= data['data']
+    global mergeThread
+    with merge_thread_lock:
+        if mergeThread is None:
+            arr=random.sample(range(message['min'], message['max']), message['max']-message['min'])
+            mergeThread = socket_.start_background_task(merge_sort, arr, 0, message['max'], message['speed'])
+    emit('logging', {'data': 'Start mergesort'})
+
+@socket_.on('BucketSort', namespace='/sort')
+def BucketSort(data):
+    message=data['data']
+    global bucketThread
+    with bucket_thread_lock:
+        if bucketThread is None:
+            arr=random.sample(range(message['min'], message['max']), message['max']-message['min'])
+            bucketThread = socket_.start_background_task(bucket_sort, arr, message['speed'])
+    emit('logging', {'data': 'Start BucketSort'})
+
+@socket_.on('count', namespace='/sort')
+def countSort(data):
+    message=data['data']
+    global countThread
+    with count_thread_lock:
+        if countThread is None:
+            arr=random.sample(range(message['min'], message['max']), message['max']-message['min'])
+            countThread = socket_.start_background_task(count_sort, arr, message['speed'])
+    emit('logging', {'data': 'Start CountSort'})
 
 if __name__ == '__main__':
     socket_.run(app, debug=True)
