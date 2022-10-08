@@ -179,7 +179,7 @@ def bubble_sort(array, speed):
             socket_.emit('bub',{'data':{'algorithm':'BubbleSort', 'array':array, 'end': len(array)}}, namespace='/sort')
             if array[j] > array[j+1]:
                 array[j], array[j+1] = array[j+1], array[j]
-
+    socket_.emit('bub',{'data':{'algorithm':'BubbleSort', 'array':array, 'end': len(array)}}, namespace='/sort')
     bubbleThread = None
 
 def merge(array, s, m, e, speed):

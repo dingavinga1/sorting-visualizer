@@ -16,7 +16,7 @@
       }
 
       input {
-        width: 400px;
+        width: 350px;
         border: none;
         padding: 12px;
         border-radius: 10px;
@@ -151,181 +151,179 @@
         });
       });
 
-      const width = 1380,
-        height = 505;
+      const width = 930,
+        height = 930;
       function setup() {
         createCanvas(width, height).parent("#main");
-        insBuffer = createGraphics(240, 250);
-        selBuffer = createGraphics(240, 250);
-        quickBuffer = createGraphics(240, 250);
-        heapBuffer = createGraphics(240, 250);
-        radBuffer = createGraphics(240, 250);
-        bubbleBuffer = createGraphics(240, 250);
-        mergeBuffer = createGraphics(240, 250);
-        bucketBuffer = createGraphics(240, 250);
-        //to be implemented
-        countBuffer = createGraphics(240, 250);
+        insBuffer = createGraphics(300, 300);
+        selBuffer = createGraphics(300, 300);
+        quickBuffer = createGraphics(300, 300);
+        heapBuffer = createGraphics(300, 300);
+        radBuffer = createGraphics(300, 300);
+        bubbleBuffer = createGraphics(300, 300);
+        mergeBuffer = createGraphics(300, 300);
+        bucketBuffer = createGraphics(300, 300);
+        countBuffer = createGraphics(300, 300);
       }
 
       function draw() {
         let lineWidth,
           noOfElements = insArr.length;
-        lineWidth = 200 / noOfElements;
-
-        bubbleBuffer.background(248, 237, 227);
-        insBuffer.background(223, 211, 195);
-        selBuffer.background(248, 237, 227);
-        mergeBuffer.background(223, 211, 195);
-        quickBuffer.background(248, 237, 227);
-        heapBuffer.background(223, 211, 195);
-        radBuffer.background(248, 237, 227);
-        bucketBuffer.background(223, 211, 195);
-        //to be implemented
-        countBuffer.background(248, 237, 227);
+        lineWidth = 300 / noOfElements;
+        
+        bubbleBuffer.background(242, 242, 242);
+        insBuffer.background(242, 242, 242);
+        selBuffer.background(242, 242, 242);
+        mergeBuffer.background(242, 242, 242);
+        quickBuffer.background(242, 242, 242);
+        heapBuffer.background(242, 242, 242);
+        radBuffer.background(242, 242, 242);
+        bucketBuffer.background(242, 242, 242);
+        countBuffer.background(242, 242, 242);
 
         let max = Math.max(...insArr);
 
         for (let i = 0; i < noOfElements; i++) {
-          insBuffer.textSize(15);
-          insBuffer.textStyle(BOLD);
-          insBuffer.text("Insertion Sort", 55, 20).fill(103, 71, 71);
+            radBuffer.fill(15, 23, 42);
+            quickBuffer.fill(15, 23, 42);
+            heapBuffer.fill(15, 23, 42);
+            bubbleBuffer.fill(15, 23, 42);
+            mergeBuffer.fill(15, 23, 42);
+            bucketBuffer.fill(15, 23, 42);
+            countBuffer.fill(15, 23, 42);
+            insBuffer.fill(15, 23, 42);
+            selBuffer.fill(15, 23, 42);
 
-          quickBuffer.textSize(15);
-          quickBuffer.textStyle(BOLD);
-          quickBuffer.text("Quick Sort", 55, 20).fill(103, 71, 71);
+            bubbleBuffer.textSize(20);
+            bubbleBuffer.textStyle(BOLD);
+            bubbleBuffer.text("Bubble Sort", 80, 20)
+        
+            insBuffer.textSize(20);
+            insBuffer.textStyle(BOLD);
+            insBuffer.text("Insertion Sort", 80, 20)
 
-          radBuffer.textSize(15);
-          radBuffer.textStyle(BOLD);
-          radBuffer.text("Radix Sort", 55, 20).fill(103, 71, 71);
+            selBuffer.textSize(20);
+            selBuffer.textStyle(BOLD);
+            selBuffer.text("Selection Sort", 80, 20)
 
-          heapBuffer.textSize(15);
-          heapBuffer.textStyle(BOLD);
-          heapBuffer.text("Heap Sort", 55, 20).fill(103, 71, 71);
+            mergeBuffer.textSize(20);
+            mergeBuffer.textStyle(BOLD);
+            mergeBuffer.text("Merge Sort", 80, 20)
 
-          countBuffer.textSize(15);
-          countBuffer.textStyle(BOLD);
-          countBuffer.text("Count Sort", 55, 20).fill(103, 71, 71);
+            quickBuffer.textSize(20);
+            quickBuffer.textStyle(BOLD);
+            quickBuffer.text("Quick Sort", 80, 20)
+
+            heapBuffer.textSize(20);
+            heapBuffer.textStyle(BOLD);
+            heapBuffer.text("Heap Sort", 80, 20)
+
+            radBuffer.textSize(20);
+            radBuffer.textStyle(BOLD);
+            radBuffer.text("Radix Sort", 80, 20)
+
+            bucketBuffer.textSize(20);
+            bucketBuffer.textStyle(BOLD);
+            bucketBuffer.text("Bucket Sort", 80, 20)
+
+            countBuffer.textSize(20);
+            countBuffer.textStyle(BOLD);
+            countBuffer.text("Count Sort", 80, 20)
+
+
+          if (i === step1) selBuffer.fill(255, 110, 131);
+          else if (i == compare1) selBuffer.fill(125, 110, 131);
+          else selBuffer.fill(125, 110, 255);
+          selBuffer.rect(
+            i * lineWidth,
+            300,
+            lineWidth,
+            -(selArr[i] / max) * 260
+          );
 
           if (i === step) insBuffer.fill(255, 110, 131);
           else if (i == compare) insBuffer.fill(125, 110, 131);
           else insBuffer.fill(125, 110, 255);
-
-          selBuffer.textSize(15);
-          selBuffer.textStyle(BOLD);
-          selBuffer.text("Selection Sort", 55, 20).fill(103, 71, 71);
-          if (i === step1) selBuffer.fill(255, 110, 131);
-          else if (i == compare1) selBuffer.fill(125, 110, 131);
-          else selBuffer.fill(125, 110, 255);
-
-          radBuffer.fill(125, 110, 131);
-          quickBuffer.fill(125, 110, 131);
-          heapBuffer.fill(125, 110, 131);
-          bubbleBuffer.fill(125, 110, 131);
-          mergeBuffer.fill(125, 110, 131);
-          bucketBuffer.fill(125, 110, 131);
-          countBuffer.fill(125, 110, 131);
-
           insBuffer.rect(
             i * lineWidth,
-            250,
+            300,
             lineWidth,
-            -(insArr[i] / max) * 200
+            -(insArr[i] / max) * 260
           );
-          selBuffer.rect(
+          
+          if (i % 2 == 0) bubbleBuffer.fill(24, 24, 24);
+          else bubbleBuffer.fill(135, 88, 255);
+          bubbleBuffer.rect(
             i * lineWidth,
-            250,
+            300,
             lineWidth,
-            -(selArr[i] / max) * 200
+            -(bubArr[i] / max) * 260
           );
 
           if (i % 2 == 0) quickBuffer.fill(0, 0, 0);
           else quickBuffer.fill(0, 128, 128);
           quickBuffer.rect(
             i * lineWidth,
-            250,
+            300,
             lineWidth,
-            -(quickArr[i] / max) * 200
+            -(quickArr[i] / max) * 260
           );
 
           if (i % 2 == 0) heapBuffer.fill(255, 87, 51);
           else heapBuffer.fill(255, 251, 219);
           heapBuffer.rect(
             i * lineWidth,
-            250,
+            300,
             lineWidth,
-            -(heapArr[i] / max) * 200
+            -(heapArr[i] / max) * 260
           );
 
           if (i % 2 == 0) radBuffer.fill(119, 197, 147);
           else radBuffer.fill(237, 53, 114);
           radBuffer.rect(
             i * lineWidth,
-            250,
+            300,
             lineWidth,
-            -(radixArr[i] / max) * 200
+            -(radixArr[i] / max) * 260
           );
 
           if (i % 2 == 0) countBuffer.fill(119, 197, 147);
           else countBuffer.fill(237, 53, 114);
           countBuffer.rect(
             i * lineWidth,
-            250,
+            300,
             lineWidth,
-            -(countArr[i] / max) * 200
+            -(countArr[i] / max) * 260
           );
-
-          bubbleBuffer.textSize(15);
-          bubbleBuffer.textStyle(BOLD);
-          bubbleBuffer.text("Bubble Sort", 55, 20).fill(103, 71, 71);
-
-          if (i % 2 == 0) bubbleBuffer.fill(0, 0, 0);
-          else bubbleBuffer.fill(210, 4, 45);
-
-          bubbleBuffer.rect(
-            i * lineWidth,
-            250,
-            lineWidth,
-            -(bubArr[i] / max) * 200
-          );
-
-          mergeBuffer.textSize(15);
-          mergeBuffer.textStyle(BOLD);
-          mergeBuffer.text("Merge Sort", 55, 20).fill(0, 255, 0);
 
           if (i % 2 == 0) mergeBuffer.fill(21, 21, 21);
           else mergeBuffer.fill(255, 255, 0);
-
           mergeBuffer.rect(
             i * lineWidth,
-            250,
+            300,
             lineWidth,
-            -(mergeArr[i] / max) * 200
+            -(mergeArr[i] / max) * 260
           );
-
-          bucketBuffer.textSize(15);
-          bucketBuffer.textStyle(BOLD);
-          bucketBuffer.text("Bucket Sort", 55, 20).fill(103, 71, 71);
 
           if (i % 2 == 0) bucketBuffer.fill(0, 0, 0);
           else bucketBuffer.fill(0, 255, 0);
           bucketBuffer.rect(
             i * lineWidth,
-            250,
+            300,
             lineWidth,
-            -(bucketArr[i] / max) * 200
+            -(bucketArr[i] / max) * 260
           );
         }
 
-        image(bubbleBuffer, 30, 0);
-        image(insBuffer, 280, 0);
-        image(selBuffer, 530, 0);
-        image(mergeBuffer, 780, 0);
-        image(quickBuffer, 1030, 0);
-        image(heapBuffer, 150, 260);
-        image(radBuffer, 400, 260);
-        image(bucketBuffer, 650, 260);
-        //to be implemented
-        image(countBuffer, 900, 260);
+        image(bubbleBuffer, 0, 0);
+        image(insBuffer, 310, 0);
+        image(selBuffer, 620, 0);
+        image(mergeBuffer, 0, 310);
+        image(quickBuffer, 310, 310);
+        image(heapBuffer, 620, 310);
+        image(radBuffer, 0, 620);
+        image(bucketBuffer, 310, 620);
+        image(countBuffer, 620, 620);
       }
     </script>
   </head>
@@ -333,7 +331,7 @@
     <p
       style="
         color: #fff;
-        font-size: 60px;
+        font-size: 45px;
         text-align: center;
         font-weight: bolder;
       "
