@@ -10,6 +10,8 @@ A Flask application that helps users visualize 9 different sorting algorithms:
 - Count Sort
 - Bucket Sort
 
+![1665230680150](https://user-images.githubusercontent.com/88616338/232252455-e997bc16-a693-4e09-8018-b8f6d0df236a.jpg)
+
 Frontend frameworks used:
 - JavaScript
 - P5.js
